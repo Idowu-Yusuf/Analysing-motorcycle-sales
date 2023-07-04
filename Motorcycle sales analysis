@@ -1,0 +1,95 @@
+You're working for a company that sells motorcycle parts, and they've asked with some help in analyzing their sales data!
+
+They operate three warehouses in the area, selling both retail and wholesale. They offer a variety of parts and accept credit card, cash, and bank transfer as payment methods. However, each payment type incurs a different fee.
+
+The board of directors want to gain a better understanding of wholesale revenue by product line, and how this varies month-to-month and across warehouses. You have been tasked with calculating net revenue for each product line, grouping results by month and warehouse. The results should be filtered so that only "Wholesale" orders are included.
+
+They have provided you with access to their database, which contains the following table called sales:
+
+Column	Data type	Description
+order_number	VARCHAR	Unique order number.
+date	DATE	Date of the order, from June to August 2021.
+warehouse	VARCHAR	The warehouse that the order was made from— North, Central, or West.
+client_type	VARCHAR	Whether the order was Retail or Wholesale.
+product_line	VARCHAR	Type of product ordered.
+quantity	INT	Number of products ordered.
+unit_price	FLOAT	Price per product (dollars).
+total	FLOAT	Total price of the order (dollars).
+payment	VARCHAR	Payment method—Credit card, Transfer, or Cash.
+payment_fee	FLOAT	Percentage of total charged as a result of the payment method.
+Your query output should be presented in the following format:
+
+product_line	month	warehouse	net_revenue
+product_one	---	---	---
+product_one	---	---	---
+product_one	---	---	---
+product_one	---	---	---
+product_one	---	---	---
+product_one	---	---	---
+product_two	---	---	---
+...	...	...	...
+
+
+SELECT product_line,
+    CASE WHEN EXTRACT('month' from date) = 6 THEN 'June'
+        WHEN EXTRACT('month' from date) = 7 THEN 'July'
+        WHEN EXTRACT('month' from date) = 8 THEN 'August'
+    END as month,
+    warehouse,
+    ROUND(SUM(total * (1 - payment_fee))::numeric, 2) AS net_revenue
+FROM sales
+WHERE client_type = 'Wholesale'
+GROUP BY product_line, warehouse, month
+ORDER BY product_line, month, net_revenue DESC;
+
+
+product_line	month	warehouse	net_revenue
+0	Breaking system	August	Central	3009.10
+1	Breaking system	August	West	2475.71
+2	Breaking system	August	North	1753.19
+3	Breaking system	July	Central	3740.94
+4	Breaking system	July	West	3030.39
+5	Breaking system	July	North	2568.55
+6	Breaking system	June	Central	3648.14
+7	Breaking system	June	North	1472.93
+8	Breaking system	June	West	1200.64
+9	Electrical system	August	North	4673.99
+10	Electrical system	August	Central	3095.22
+11	Electrical system	August	West	1229.45
+12	Electrical system	July	Central	5521.94
+13	Electrical system	July	North	1693.06
+14	Electrical system	July	West	444.98
+15	Electrical system	June	Central	2875.93
+16	Electrical system	June	North	2002.30
+17	Engine	August	Central	9433.48
+18	Engine	August	North	2300.96
+19	Engine	July	Central	1808.77
+20	Engine	July	North	997.08
+21	Engine	June	Central	6483.40
+22	Frame & body	August	Central	8571.50
+23	Frame & body	August	North	7819.95
+24	Frame & body	August	West	821.40
+25	Frame & body	July	North	6093.11
+26	Frame & body	July	Central	3103.82
+27	Frame & body	June	Central	5060.29
+28	Frame & body	June	North	4861.08
+29	Frame & body	June	West	2751.96
+30	Miscellaneous	August	North	1823.03
+31	Miscellaneous	August	Central	1722.40
+32	Miscellaneous	August	West	805.31
+33	Miscellaneous	July	Central	3087.31
+34	Miscellaneous	July	North	2380.63
+35	Miscellaneous	July	West	1145.26
+36	Miscellaneous	June	West	2258.20
+37	Miscellaneous	June	Central	1859.34
+38	Miscellaneous	June	North	508.86
+39	Suspension & traction	August	Central	5362.59
+40	Suspension & traction	August	North	4874.51
+41	Suspension & traction	August	West	1069.99
+42	Suspension & traction	July	Central	6392.23
+43	Suspension & traction	July	North	3677.21
+44	Suspension & traction	July	West	2909.98
+45	Suspension & traction	June	North	7985.17
+46	Suspension & traction	June	Central	3291.80
+47	Suspension & traction	June	West	2348.83
+
